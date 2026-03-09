@@ -105,9 +105,10 @@ def do_bucket(app: AppState) -> None:
     total = len(unbucketed)
     print(f"  {total} contacts need bucketing.\n")
     print("  For each person, type:")
-    print("    1 = Close    (inner circle, people you actively maintain)")
-    print("    2 = Casual   (friends/regular contacts)")
-    print("    3 = Acquaintance (distant, rarely interact)")
+    print("    1 = Close        (best friends, family, inner circle)")
+    print("    2 = Casual       (friends you hang out with regularly)")
+    print("    3 = Acquaintance (christmas card people, rarely interact)")
+    print("    4 = Peripheral   (know of each other, not really friends)")
     print("    s = Skip (come back later)")
     print("    q = Quit bucketing\n")
 
@@ -121,7 +122,7 @@ def do_bucket(app: AppState) -> None:
 
         remaining = total - i
         print(f"  [{remaining} left] {name}{extra}")
-        choice = prompt("[1] Close  [2] Casual  [3] Acquaintance  [s]kip  [q]uit:", "123sq")
+        choice = prompt("[1] Close  [2] Casual  [3] Acquaintance  [4] Peripheral  [s]kip  [q]uit:", "1234sq")
 
         if choice == 'q':
             break
@@ -135,6 +136,9 @@ def do_bucket(app: AppState) -> None:
             done += 1
         elif choice == '3':
             state.apply_bucket(Bucket.ACQUAINTANCE)
+            done += 1
+        elif choice == '4':
+            state.apply_bucket(Bucket.PERIPHERAL)
             done += 1
 
         # Save periodically
@@ -157,6 +161,7 @@ def _show_bucket_distribution(app: AppState):
     print(f"    Close:        {counts[Bucket.CLOSE]}")
     print(f"    Casual:       {counts[Bucket.CASUAL]}")
     print(f"    Acquaintance: {counts[Bucket.ACQUAINTANCE]}")
+    print(f"    Peripheral:   {counts[Bucket.PERIPHERAL]}")
     print(f"    Unassigned:   {counts[Bucket.UNASSIGNED]}")
 
 
@@ -282,11 +287,11 @@ def do_view(app: AppState) -> None:
     print(f"  Total: {len(bucketed)} ranked, {len(app.unbucketed_states())} unassigned")
 
     # Show by bucket
-    choice = prompt("\nFilter by bucket? [c]lose [a]casual [q]acquaintance [n]o:", "caqn")
+    choice = prompt("\nFilter by bucket? [c]lose [a]casual [q]acquaintance [p]eripheral [n]o:", "caqpn")
     if choice == 'n':
         return
 
-    bucket_map = {'c': Bucket.CLOSE, 'a': Bucket.CASUAL, 'q': Bucket.ACQUAINTANCE}
+    bucket_map = {'c': Bucket.CLOSE, 'a': Bucket.CASUAL, 'q': Bucket.ACQUAINTANCE, 'p': Bucket.PERIPHERAL}
     if choice in bucket_map:
         filtered = [s for s in bucketed if s.bucket == bucket_map[choice]]
         filtered.sort(key=lambda s: s.score, reverse=True)
@@ -346,19 +351,19 @@ def do_rebucket(app: AppState) -> None:
     print(f"  Current: {state.bucket.value} (score={state.score:.0f}, RD={state.rd:.0f})")
     print()
 
-    choice = prompt("[1] Close  [2] Casual  [3] Acquaintance  [x] Remove from ranking  [c]ancel:", "123xc")
+    choice = prompt("[1] Close  [2] Casual  [3] Acquaintance  [4] Peripheral  [x] Remove from ranking  [c]ancel:", "1234xc")
 
     if choice == 'c':
         return
     elif choice == 'x':
         state.bucket = Bucket.UNASSIGNED
-        state.score = 450.0
+        state.score = 500.0
         state.rd = 350.0
         state.comparison_count = 0
         state.last_compared_at = None
         print(f"  Removed {contact.display_name()} from ranking.")
     else:
-        bucket_map = {'1': Bucket.CLOSE, '2': Bucket.CASUAL, '3': Bucket.ACQUAINTANCE}
+        bucket_map = {'1': Bucket.CLOSE, '2': Bucket.CASUAL, '3': Bucket.ACQUAINTANCE, '4': Bucket.PERIPHERAL}
         new_bucket = bucket_map[choice]
         old_bucket = state.bucket
 
@@ -430,7 +435,7 @@ def main():
             print(f"  {total} contacts | {bucketed} bucketed | {comparisons} comparisons\n")
 
         print("  [i] Import contacts from .vcf file")
-        print("  [b] Bucket contacts (close / casual / acquaintance)")
+        print("  [b] Bucket contacts (close / casual / acquaintance / peripheral)")
         print("  [c] Compare (pairwise ranking)")
         print("  [v] View rankings")
         print("  [r] Rebucket a contact")
