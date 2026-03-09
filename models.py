@@ -9,17 +9,24 @@ import uuid
 
 class Bucket(Enum):
     UNASSIGNED = "unassigned"
-    CLOSE = "close"
-    CASUAL = "casual"
-    ACQUAINTANCE = "acquaintance"
+    CLOSE = "close"        # best friends, family, inner circle
+    CASUAL = "casual"      # friends you hang out with regularly
+    ACQUAINTANCE = "acquaintance"  # christmas card people, low frequency
+    PERIPHERAL = "peripheral"      # know of each other, not really friends
 
 
 # Bucket configuration: (seed_score, floor_score)
+# Scores are distributed across 0-1000 in four bands:
+#   Close:        750-1000  (seed 875)
+#   Casual:       500-749   (seed 625)
+#   Acquaintance: 250-499   (seed 375)
+#   Peripheral:   0-249     (seed 125)
 BUCKET_CONFIG = {
-    Bucket.CLOSE: {"seed": 750.0, "floor": 600.0},
-    Bucket.CASUAL: {"seed": 450.0, "floor": 200.0},
-    Bucket.ACQUAINTANCE: {"seed": 150.0, "floor": 0.0},
-    Bucket.UNASSIGNED: {"seed": 450.0, "floor": 0.0},  # default to casual-range
+    Bucket.CLOSE:        {"seed": 875.0, "floor": 750.0},
+    Bucket.CASUAL:       {"seed": 625.0, "floor": 500.0},
+    Bucket.ACQUAINTANCE: {"seed": 375.0, "floor": 250.0},
+    Bucket.PERIPHERAL:   {"seed": 125.0, "floor": 0.0},
+    Bucket.UNASSIGNED:   {"seed": 500.0, "floor": 0.0},
 }
 
 
