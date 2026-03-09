@@ -32,19 +32,22 @@ def test_bucketing():
         app.add_contact(c)
 
     states = app.all_states()
-    # Bucket first 3 as close, next 4 as casual, last 3 as acquaintance
+    # Bucket across all 4 tiers: 3 close, 3 casual, 2 acquaintance, 2 peripheral
     for s in states[:3]:
         s.apply_bucket(Bucket.CLOSE)
-    for s in states[3:7]:
+    for s in states[3:6]:
         s.apply_bucket(Bucket.CASUAL)
-    for s in states[7:]:
+    for s in states[6:8]:
         s.apply_bucket(Bucket.ACQUAINTANCE)
+    for s in states[8:]:
+        s.apply_bucket(Bucket.PERIPHERAL)
 
-    assert states[0].score == 750.0
+    assert states[0].score == 875.0,  f"Close seed should be 875, got {states[0].score}"
     assert states[0].rd == 200.0
-    assert states[4].score == 450.0
-    assert states[8].score == 150.0
-    print(f"  PASS: Bucketing seeds scores correctly")
+    assert states[3].score == 625.0,  f"Casual seed should be 625, got {states[3].score}"
+    assert states[6].score == 375.0,  f"Acquaintance seed should be 375, got {states[6].score}"
+    assert states[8].score == 125.0,  f"Peripheral seed should be 125, got {states[8].score}"
+    print(f"  PASS: Bucketing seeds all 4 tiers correctly")
     return app
 
 
@@ -63,11 +66,17 @@ def test_scoring():
     assert b.score < old_b, f"Loser score should decrease: {old_b} -> {b.score}"
     assert a.rd < 200.0, f"Winner RD should decrease: {a.rd}"
     assert b.rd < 200.0, f"Loser RD should decrease: {b.rd}"
-    assert b.score >= 200.0, f"Casual floor should hold: {b.score}"
+    assert b.score >= 500.0, f"Casual floor (500) should hold: {b.score}"
+
+    # Also verify peripheral floor holds
+    p = states[8]  # peripheral contact
+    old_p = p.score
+    update_scores(b, p, is_draw=False)  # peripheral loses
+    assert p.score >= 0.0, f"Peripheral floor (0) should hold: {p.score}"
 
     print(f"  PASS: Scores update correctly (A: {old_a:.0f}->{a.score:.0f}, B: {old_b:.0f}->{b.score:.0f})")
     print(f"  PASS: RD decreased (A: 200->{a.rd:.0f}, B: 200->{b.rd:.0f})")
-    print(f"  PASS: Bucket floor holds")
+    print(f"  PASS: Bucket floors hold for all 4 tiers")
 
 
 def test_selector():
