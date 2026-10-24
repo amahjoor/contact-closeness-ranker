@@ -3,4 +3,5 @@ __pycache__/
 data.json
 test_data.json
 *.vcf
+!test_contacts.vcf
 .DS_Store

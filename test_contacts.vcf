@@ -1,0 +1,70 @@
+BEGIN:VCARD
+VERSION:3.0
+FN:John Doe
+TEL:+1-555-0101
+EMAIL:john@example.com
+ORG:Acme Corp
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Jane Roe
+TEL:+1-555-0102
+EMAIL:jane@example.com
+ORG:Acme Corp
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Alex Kim
+TEL:+1-555-0103
+EMAIL:alex@example.com
+ORG:North Lab
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Sam Patel
+TEL:+1-555-0104
+EMAIL:sam@example.com
+ORG:North Lab
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Riley Chen
+TEL:+1-555-0105
+EMAIL:riley@example.com
+ORG:North Lab
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Morgan Lee
+TEL:+1-555-0106
+EMAIL:morgan@example.com
+ORG:South Studio
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Casey Nguyen
+TEL:+1-555-0107
+EMAIL:casey@example.com
+ORG:South Studio
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Jordan Blake
+TEL:+1-555-0108
+EMAIL:jordan@example.com
+ORG:South Studio
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Taylor Ortiz
+TEL:+1-555-0109
+EMAIL:taylor@example.com
+ORG:East Office
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Quinn Brooks
+TEL:+1-555-0110
+EMAIL:quinn@example.com
+ORG:East Office
+END:VCARD
